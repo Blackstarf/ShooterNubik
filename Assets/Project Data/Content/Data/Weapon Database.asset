@@ -14,21 +14,29 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   weapons:
   - name: MINIGUN
+    englishName: MINIGUN
+    russianName: "\u041C\u0418\u041D\u0418\u0413\u0410\u041D"
     type: 0
     upgradeType: 0
     rarity: 0
     icon: {fileID: 21300000, guid: 96f48177d01e5c0419ff1e59b578c5ee, type: 3}
   - name: SHOTGUN
+    englishName: SHOTGUN
+    russianName: "\u0414\u0412\u0423\u0425\u0421\u0422\u0412\u041E\u041B\u041A\u0410"
     type: 3
     upgradeType: 1
-    rarity: 0
+    rarity: 2
     icon: {fileID: 21300000, guid: 3a51fb644e3b61f44aeefd3157e165e0, type: 3}
   - name: LAVA GUN
+    englishName: LAVA GUN
+    russianName: "\u041B\u0410\u0412\u0410 \u041F\u0423\u0428\u041A\u0410"
     type: 1
     upgradeType: 3
-    rarity: 1
+    rarity: 3
     icon: {fileID: 21300000, guid: b5f1a70cce958d14c8be56bde5c89019, type: 3}
   - name: TESLA GUN
+    englishName: TESLA GUN
+    russianName: "\u041E\u0420\u0423\u0416\u0418\u0415 \u0422\u0415\u0421\u041B\u042B"
     type: 2
     upgradeType: 2
     rarity: 4

@@ -9,8 +9,6 @@ namespace Watermelon.SquadShooter
         [SerializeField] Canvas canvas;
         [SerializeField] CanvasScaler scaler;
 
-        [SerializeField] Gradient gradient;
-
         private Vector2 size;
         private Vector2 center;
 
@@ -38,28 +36,6 @@ namespace Watermelon.SquadShooter
             var start = 0f;
             var end = 1f;
 
-            for (int i = 0; i < gradient.alphaKeys.Length; i++)
-            {
-                var key = gradient.alphaKeys[i];
-
-                if (key.alpha == 1f)
-                {
-                    start = key.time;
-                    break;
-                }
-            }
-
-            for (int i = gradient.alphaKeys.Length - 1; i >= 0; i--)
-            {
-                var key = gradient.alphaKeys[i];
-
-                if (key.alpha == 1f)
-                {
-                    end = key.time;
-                    break;
-                }
-            }
-
             var sum = end - start;
 
             var imageHeight = screenHeight / sum;
@@ -72,11 +48,6 @@ namespace Watermelon.SquadShooter
             texture.wrapMode = TextureWrapMode.Clamp;
 
             var colors = new Color32[100];
-
-            for (int i = 0; i < 100; i++)
-            {
-                colors[i] = gradient.Evaluate(i / 99f);
-            }
 
             texture.SetPixels32(colors);
             texture.Apply();

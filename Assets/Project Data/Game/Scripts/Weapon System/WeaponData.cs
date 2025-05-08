@@ -9,6 +9,12 @@ namespace Watermelon.SquadShooter
         [SerializeField] string name;
         public string Name => name;
 
+        [SerializeField] string englishName;
+        public string EnglishName => englishName;
+
+        [SerializeField] string russianName;
+        public string RussianName=>russianName;
+
         [SerializeField] WeaponType type;
         public WeaponType Type => type;
 
