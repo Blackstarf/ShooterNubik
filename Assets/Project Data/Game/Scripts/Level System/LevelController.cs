@@ -659,7 +659,10 @@ namespace Watermelon.LevelSystem
 
         public static string GetCurrentAreaText()
         {
-            return string.Format("AREA {0}-{1}", ActiveRoom.CurrentWorldIndex + 1, ActiveRoom.CurrentLevelIndex + 1);
+            if (YG.YandexGame.lang == "ru")
+            {
+                return string.Format("АРЕНА {0}-{1}", ActiveRoom.CurrentWorldIndex + 1, ActiveRoom.CurrentLevelIndex + 1);
+            } else return string.Format("AREA {0}-{1}", ActiveRoom.CurrentWorldIndex + 1, ActiveRoom.CurrentLevelIndex + 1);
         }
 
         public static List<int> SplitIntEqually(int value, int partsAmount)

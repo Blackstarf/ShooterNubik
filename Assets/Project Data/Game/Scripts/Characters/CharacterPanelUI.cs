@@ -6,12 +6,9 @@ using Watermelon;
 
 namespace Watermelon.SquadShooter
 {
-
-
     public class CharacterPanelUI : MonoBehaviour
     {
         private const string LOCKED_NAME = "???";
-        private const string UPGRADE_TEXT = "UPGRADE";
         private const string EVOLVE_TEXT = "EVOLVE";
 
         [SerializeField] Image previewImage;
@@ -95,7 +92,11 @@ namespace Watermelon.SquadShooter
 
             if (character.IsUnlocked())
             {
-                titleText.text = character.Name.ToUpper();
+                if (YG.YandexGame.lang == "ru")
+                {
+                    titleText.text = character.NameRU.ToUpper();
+                }
+                else titleText.text = character.Name.ToUpper();
 
                 storedIsLocked = false;
 
@@ -263,10 +264,6 @@ namespace Watermelon.SquadShooter
                 if (upgradeState.ChangeStage)
                 {
                     upgradesText.text = EVOLVE_TEXT;
-                }
-                else
-                {
-                    upgradesText.text = UPGRADE_TEXT;
                 }
             }
         }

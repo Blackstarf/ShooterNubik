@@ -15,6 +15,7 @@ MonoBehaviour:
   characters:
   - type: 0
     name: Jim
+    nameRu: "\u041A\u041E\u0412\u0411\u041E\u0419"
     requiredLevel: 0
     lockedSprite: {fileID: 21300000, guid: 2f3d18b5571311645ae5c0ab7af86963, type: 3}
     stages:
@@ -80,6 +81,7 @@ MonoBehaviour:
       stageIndex: -1
   - type: 1
     name: Mike
+    nameRu: "\u0418\u041D\u041E\u041F\u041B\u0410\u041D\u0415\u0442\u043D\u044B\u0439"
     requiredLevel: 3
     lockedSprite: {fileID: 21300000, guid: d4321a8adb26e7c479f9dbaf87594f69, type: 3}
     stages:
@@ -145,6 +147,7 @@ MonoBehaviour:
       stageIndex: -1
   - type: 2
     name: Dustin
+    nameRu: "\u041A\u041E\u0428\u0415\u0427\u041A\u0410-\u041C\u042F\u0423"
     requiredLevel: 5
     lockedSprite: {fileID: 21300000, guid: 83962838e12590049bcd0591eecb995e, type: 3}
     stages:

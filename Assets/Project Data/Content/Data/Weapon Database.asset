@@ -32,7 +32,7 @@ MonoBehaviour:
     russianName: "\u041B\u0410\u0412\u0410 \u041F\u0423\u0428\u041A\u0410"
     type: 1
     upgradeType: 3
-    rarity: 3
+    rarity: 4
     icon: {fileID: 21300000, guid: b5f1a70cce958d14c8be56bde5c89019, type: 3}
   - name: TESLA GUN
     englishName: TESLA GUN

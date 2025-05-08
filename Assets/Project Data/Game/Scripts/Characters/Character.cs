@@ -12,6 +12,9 @@ namespace Watermelon.SquadShooter
         [SerializeField] string name;
         public string Name => name;
 
+        [SerializeField] string nameRu;
+        public string NameRU => nameRu;
+
         [SerializeField] int requiredLevel;
         public int RequiredLevel => requiredLevel;
 

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using YG;
 
 namespace Watermelon
 {
@@ -16,11 +17,25 @@ namespace Watermelon
 
         private static Dictionary<CurrencyType, int> currenciesLink;
 
+        [Header("Reward Ads Settings")]
+        [SerializeField] int coinsRewardAmount = 75;
+        [SerializeField] CurrencyType rewardCurrencyType = CurrencyType.Coin;
+
+        private void OnEnable()
+        {
+            YandexGame.RewardVideoEvent += OnRewardedAdCompleted;
+        }
+
+        private void OnDisable()
+        {
+            YandexGame.RewardVideoEvent -= OnRewardedAdCompleted;
+        }
+
         public virtual void Initialise()
         {
             currenciesController = this;
 
-            // Initialsie database
+            // Initialise database
             currenciesDatabase.Initialise();
 
             // Store active currencies
@@ -36,11 +51,28 @@ namespace Watermelon
                 }
                 else
                 {
-                    Debug.LogError(string.Format("[Currency Syste]: Currency with type {0} added to database twice!", currencies[i].CurrencyType));
+                    Debug.LogError($"[Currency System]: Currency with type {currencies[i].CurrencyType} added to database twice!");
                 }
 
                 var save = SaveController.GetSaveObject<Currency.Save>("currency" + ":" + (int)currencies[i].CurrencyType);
                 currencies[i].SetSave(save);
+            }
+        }
+
+        public static void ShowRewardAd()
+        {
+            if (YandexGame.Instance != null)
+                YandexGame.RewVideoShow(1);
+            else
+                Debug.LogError("YandexGame instance is missing!");
+        }
+
+        private void OnRewardedAdCompleted(int rewardId)
+        {
+            if (rewardId == 1)
+            {
+                Add(rewardCurrencyType, coinsRewardAmount);
+                Debug.Log($"Reward received: {coinsRewardAmount} coins!");
             }
         }
 
@@ -62,45 +94,30 @@ namespace Watermelon
         public static void Set(CurrencyType currencyType, int amount)
         {
             Currency currency = currencies[currenciesLink[currencyType]];
-
             currency.Amount = amount;
-
-            // Change save state to required
             SaveController.MarkAsSaveIsRequired();
-
-            // Invoke currency change event
             currency.InvokeChangeEvent(0);
         }
 
         public static void Add(CurrencyType currencyType, int amount)
         {
             Currency currency = currencies[currenciesLink[currencyType]];
-
             currency.Amount += amount;
-
-            // Change save state to required
             SaveController.MarkAsSaveIsRequired();
-
-            // Invoke currency change event;
             currency.InvokeChangeEvent(amount);
         }
 
         public static void Substract(CurrencyType currencyType, int amount)
         {
             Currency currency = currencies[currenciesLink[currencyType]];
-
             currency.Amount -= amount;
-
-            // Change save state to required
             SaveController.MarkAsSaveIsRequired();
-
-            // Invoke currency change event
             currency.InvokeChangeEvent(-amount);
         }
 
         public static void SubscribeGlobalCallback(CurrencyChangeDelegate currencyChange)
         {
-            for(int i = 0; i < currencies.Length; i++)
+            for (int i = 0; i < currencies.Length; i++)
             {
                 currencies[i].OnCurrencyChanged += currencyChange;
             }

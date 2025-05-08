@@ -102,8 +102,8 @@ namespace Watermelon.SquadShooter
                     case "EPIC":
                         rarityText.text = "›œ»◊Õ€…";
                         break;
-                    case "Legendary":
-                        rarityText.text = "ÀÂ„ÂÌ‰‡Ì˚È";
+                    case "LEGENDARY":
+                        rarityText.text = "À≈√≈Õƒ¿–Õ€…";
                         break;
                     default:
                         rarityText.text = data.RarityData.Name;
@@ -213,7 +213,11 @@ namespace Watermelon.SquadShooter
 
         private void RedrawUpgradeElements()
         {
-            levelText.text = "LEVEL " + Upgrade.UpgradeLevel;
+            if (YandexGame.lang == "ru")
+            {
+                levelText.text = "”–Œ¬≈Õ. " + Upgrade.UpgradeLevel;
+            }
+            else levelText.text = "LEVEL " + Upgrade.UpgradeLevel;
 
             if (!Upgrade.IsMaxedOut)
             {
