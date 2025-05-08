@@ -12,8 +12,16 @@ namespace Watermelon
         private void Awake()
         {
             DontDestroyOnLoad(gameObject);
-
-            OnLoading(0.0f, "Loading..");
+            switch (YG.YandexGame.lang)
+            {
+                case "ru":
+                    OnLoading(0.0f, "ЗАГРУЗКА..");
+                    break;
+                case "en":
+                    OnLoading(0.0f, "Loading..");
+                    break;
+            }
+            OnLoading(0.0f, "ЗАГРУЗКА..");
         }
 
         private void OnEnable()

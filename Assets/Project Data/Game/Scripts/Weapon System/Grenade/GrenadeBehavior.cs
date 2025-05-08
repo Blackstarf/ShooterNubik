@@ -82,7 +82,7 @@ namespace Watermelon.SquadShooter
 
             Vector3 calculatedVelocity = (transform.position - prevPos) / Time.deltaTime;
             Vector3 clampedVelocity = new Vector3(Mathf.Clamp(calculatedVelocity.x, -100f, 100f), Mathf.Clamp(calculatedVelocity.y, -100f, 100f), Mathf.Clamp(calculatedVelocity.z, -100f, 100f));
-            rigidbody.velocity = clampedVelocity;
+            rigidbody.linearVelocity = clampedVelocity;
             rigidbody.angularVelocity = angularVelocity;
 
             yield return new WaitForSeconds(0.5f);

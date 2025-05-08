@@ -103,7 +103,7 @@ namespace Watermelon
 
             public void Restore()
             {
-                rb.velocity = Vector3.zero;
+                rb.linearVelocity = Vector3.zero;
                 rb.transform.SetParent(parent);
                 rb.transform.localPosition = localPos;
                 rb.transform.localEulerAngles = localRot;

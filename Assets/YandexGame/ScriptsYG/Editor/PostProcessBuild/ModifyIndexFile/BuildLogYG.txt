@@ -1,2 +1,2 @@
-Build path: D:/Builded Games/SquadShooter
-Build number: 21
+Build path: C:/Users/B-ZONE/OneDrive/Рабочий стол/BuildShooter/Builds
+Build number: 25

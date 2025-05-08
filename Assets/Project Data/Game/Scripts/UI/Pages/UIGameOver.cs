@@ -21,7 +21,6 @@ namespace Watermelon
         {
             reviveButton.onClick.AddListener(Revive);
             continueButton.onClick.AddListener(Replay);
-
         }
 
         #region Show/Hide

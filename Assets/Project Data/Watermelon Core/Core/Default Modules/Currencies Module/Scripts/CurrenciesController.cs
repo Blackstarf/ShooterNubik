@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Watermelon.LevelSystem;
 using YG;
 
 namespace Watermelon
@@ -35,13 +36,10 @@ namespace Watermelon
         {
             currenciesController = this;
 
-            // Initialise database
             currenciesDatabase.Initialise();
 
-            // Store active currencies
             currencies = currenciesDatabase.Currencies;
 
-            // Link currencies by the type
             currenciesLink = new Dictionary<CurrencyType, int>();
             for (int i = 0; i < currencies.Length; i++)
             {
@@ -62,17 +60,29 @@ namespace Watermelon
         public static void ShowRewardAd()
         {
             if (YandexGame.Instance != null)
-                YandexGame.RewVideoShow(1);
+                YandexGame.RewVideoShow(1); // rewardId = 1 для монет
+            else
+                Debug.LogError("YandexGame instance is missing!");
+        }
+
+        public static void ShowSkipLevelAd()
+        {
+            if (YandexGame.Instance != null)
+                YandexGame.RewVideoShow(2); // rewardId = 2 для пропуска уровня
             else
                 Debug.LogError("YandexGame instance is missing!");
         }
 
         private void OnRewardedAdCompleted(int rewardId)
         {
-            if (rewardId == 1)
+            switch (rewardId)
             {
-                Add(rewardCurrencyType, coinsRewardAmount);
-                Debug.Log($"Reward received: {coinsRewardAmount} coins!");
+                case 1:
+                    Add(rewardCurrencyType, coinsRewardAmount);
+                    break;
+                case 2:
+                    LevelController.NextLevelDev();
+                    break;
             }
         }
 

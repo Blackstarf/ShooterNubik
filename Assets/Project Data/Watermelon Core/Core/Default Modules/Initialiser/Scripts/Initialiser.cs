@@ -5,7 +5,6 @@ using UnityEngine;
 namespace Watermelon
 {
     [DefaultExecutionOrder(-999)]
-    [HelpURL("https://docs.google.com/document/d/1ORNWkFMZ5_Cc-BUgu9Ds1DjMjR4ozMCyr6p_GGdyCZk")]
     public class Initialiser : MonoBehaviour
     {
         [SerializeField] ProjectInitSettings initSettings;

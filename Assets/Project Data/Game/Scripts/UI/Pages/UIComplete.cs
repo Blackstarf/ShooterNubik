@@ -63,7 +63,10 @@ namespace Watermelon
             dotsBackground.BackgroundImage.color = Color.white.SetAlpha(0.0f);
             panelContentCanvasGroup.alpha = 0;
 
-            levelText.text = string.Format(LEVEL_TEXT, currentWorld, currentLevel);
+            if (YG.YandexGame.lang == "ru")
+            {
+                levelText.text = string.Format("сп. {0}-{1}", currentWorld, currentLevel);
+            }else levelText.text = string.Format(LEVEL_TEXT, currentWorld, currentLevel);
 
             dotsBackground.BackgroundImage.DOColor(Color.white, 0.3f);
             panelContentCanvasGroup.DOFade(1.0f, 0.3f, 0.1f);

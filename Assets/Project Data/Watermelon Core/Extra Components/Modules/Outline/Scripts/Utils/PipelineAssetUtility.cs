@@ -19,7 +19,7 @@ namespace Watermelon.Outline
             {
                 var pipeline = QualitySettings.renderPipeline;
                 if (pipeline == null)
-                    pipeline = GraphicsSettings.renderPipelineAsset;
+                    pipeline = GraphicsSettings.defaultRenderPipeline;
                 return pipeline;
             }
         }
@@ -42,8 +42,8 @@ namespace Watermelon.Outline
             {
                 var set = new HashSet<RenderPipelineAsset>();
 
-                if (GraphicsSettings.renderPipelineAsset != null)
-                    set.Add(GraphicsSettings.renderPipelineAsset);
+                if (GraphicsSettings.defaultRenderPipeline != null)
+                    set.Add(GraphicsSettings.defaultRenderPipeline);
 
                 var qualitySettingNames = QualitySettings.names;
                 for (var index = 0; index < qualitySettingNames.Length; index++)

@@ -183,18 +183,6 @@ namespace Watermelon
             });
         }
 
-
-        private void Update()
-        {
-#if UNITY_EDITOR
-            if (Input.GetKeyDown(KeyCode.N))
-                ActionsMenu.NextLevel();
-
-            if (Input.GetKeyDown(KeyCode.R))
-                ActionsMenu.SkipRoom();
-#endif
-        }
-
         #region Extensions
         public bool CacheComponent<T>(out T component) where T : Component
         {

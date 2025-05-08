@@ -15,3 +15,4 @@ EditorBuildSettings:
     path: Assets/Project Data/Game/Scenes/LevelEditor.unity
     guid: 0259869f3ffe83b4f910db80130499d4
   m_configObjects: {}
+  m_UseUCBPForAssetBundles: 0

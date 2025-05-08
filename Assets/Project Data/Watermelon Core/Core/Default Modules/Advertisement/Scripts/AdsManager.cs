@@ -339,7 +339,7 @@ namespace Watermelon
 
         public static void ShowErrorMessage()
         {
-            FloatingMessage.ShowMessage("Network error. Please try again later");
+           
         }
 
         public static bool IsModuleEnabled(AdvertisingModules advertisingModule)
