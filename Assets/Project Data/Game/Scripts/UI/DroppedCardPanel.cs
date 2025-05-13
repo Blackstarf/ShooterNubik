@@ -2,6 +2,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using Watermelon.Upgrades;
+using YG;
 
 namespace Watermelon.SquadShooter
 {
@@ -43,11 +44,44 @@ namespace Watermelon.SquadShooter
 
             currentCardsAmount = weaponData.CardsAmount;
 
-            titleText.text = weaponData.Name;
+            switch (YandexGame.lang)
+            {
+                case "ru":
+                    titleText.text = weaponData.RussianName;
+                    break;
+                case "en":
+                    titleText.text = weaponData.EnglishName;
+                    break;
+                default:
+                    titleText.text = weaponData.EnglishName;
+                    break;
+
+            }
 
             weaponPreviewImage.sprite = weaponData.Icon;
-
-            rarityText.text = rarityData.Name;
+            if (YandexGame.lang == "ru")
+            {
+                string rarityName = rarityData.Name;
+                switch (rarityName)
+                {
+                    case "COMMON":
+                        rarityText.text = "Œ¡€◊Õ€…";
+                        break;
+                    case "RARE":
+                        rarityText.text = "–≈ƒ »…";
+                        break;
+                    case "EPIC":
+                        rarityText.text = "›œ»◊Õ€…";
+                        break;
+                    case "LEGENDARY":
+                        rarityText.text = "À≈√≈Õƒ¿–Õ€…";
+                        break;
+                    default:
+                        rarityText.text = rarityData.Name;
+                        break;
+                }
+            }
+            else rarityText.text = rarityData.Name;
             rarityText.color = rarityData.TextColor;
 
             weaponBackgroundImage.color = rarityData.MainColor;
