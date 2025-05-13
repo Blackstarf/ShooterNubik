@@ -28,8 +28,6 @@ namespace Watermelon.SquadShooter
             this.parentTransform = parentTransform;
             this.offset = offset;
 
-            label.text = text;
-
             gameObject.SetActive(true);
             labelAnimation.enabled = true;
         }
