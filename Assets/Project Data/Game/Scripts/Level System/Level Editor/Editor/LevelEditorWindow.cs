@@ -1333,23 +1333,3 @@ namespace Watermelon.SquadShooter
         }
     }
 }
-
-// -----------------
-// Scene interraction level editor V1.5
-// -----------------
-
-// Changelog
-// v 1.4
-// • Updated EnumObjectlist
-// • Updated object preview
-// v 1.4
-// • Updated EnumObjectlist
-// • Fixed bug with window size
-// v 1.3
-// • Updated EnumObjectlist
-// • Added StartPointHandles script that can be added to gameobjects
-// v 1.2
-// • Reordered some methods
-// v 1.1
-// • Added spawner tool
-// v 1 basic version works

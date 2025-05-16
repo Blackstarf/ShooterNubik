@@ -73,8 +73,10 @@ namespace Watermelon.LevelSystem
 
             levelsDatabase = levelSettings.LevelsDatabase;
             levelsDatabase.Initialise();
+            levelSave = new LevelSave();
+            levelSave.WorldIndex = PlayerPrefs.GetInt("level_WorldIndex", 0);
+            levelSave.LevelIndex = PlayerPrefs.GetInt("level_LevelIndex", 0);
 
-            levelSave = SaveController.GetSaveObject<LevelSave>("level");
             levelGameObject = new GameObject("[LEVEL]");
             levelGameObject.transform.ResetGlobal();
 
@@ -257,15 +259,6 @@ namespace Watermelon.LevelSystem
             }
         }
 
-        private static bool DoesNextRoomExist()
-        {
-            if (isLevelLoaded)
-            {
-                return currentLevelData.Rooms.IsInRange(currentRoomIndex + 1);
-            }
-
-            return false;
-        }
 
         private static void LoadRoom(int index)
         {
@@ -512,7 +505,12 @@ namespace Watermelon.LevelSystem
                 OnLevelCompleted();
             }
         }
-
+        public static void SaveLevelProgress(int worldIndex, int levelIndex)
+        {
+            PlayerPrefs.SetInt("level_WorldIndex", worldIndex);
+            PlayerPrefs.SetInt("level_LevelIndex", levelIndex);
+            PlayerPrefs.Save();
+        }
         public static void OnEnemyKilled(BaseEnemyBehavior enemyBehavior)
         {
             if (!manualExitActivation)

@@ -1,85 +1,74 @@
 ﻿using System;
 using UnityEngine;
-using System.Collections.Generic;
 
 namespace Watermelon
 {
     [Serializable]
     public class GlobalSave
     {
-        [SerializeField] public string buildId;
+        private const string KEY_LEVEL_ID = "global_level_id";
+        private const string KEY_GAME_TIME = "global_game_time";
+        private const string KEY_LAST_EXIT_TIME = "global_last_exit_time";
 
-        [SerializeField] int levelId;
-        public int LevelId { get => levelId; set => levelId = value; }
+        public int LevelId
+        {
+            get => PlayerPrefs.GetInt(KEY_LEVEL_ID, 0);
+            set => PlayerPrefs.SetInt(KEY_LEVEL_ID, value);
+        }
 
-        [SerializeField] SavedDataContainer[] saveObjects;
-        private List<SavedDataContainer> saveObjectsList;
-
-        [SerializeField] float gameTime;
         public float GameTime => gameTime + (Time - lastFlushTime);
 
-        [SerializeField] DateTime lastExitTime;
-        public DateTime LastExitTime => lastExitTime;
-
-        private float lastFlushTime = 0;
+        private float gameTime;
+        public DateTime LastExitTime { get; private set; }
 
         public float Time { get; set; }
+        private float lastFlushTime;
 
         public void Init(float time)
         {
-            if (saveObjects == null)
+            Time = time;
+            lastFlushTime = Time;
+
+            gameTime = PlayerPrefs.GetFloat(KEY_GAME_TIME, 0f);
+
+            string exitTimeStr = PlayerPrefs.GetString(KEY_LAST_EXIT_TIME, "");
+            if (!string.IsNullOrEmpty(exitTimeStr))
             {
-                saveObjectsList = new List<SavedDataContainer>();
+                LastExitTime = DateTime.Parse(exitTimeStr);
             }
             else
             {
-                saveObjectsList = new List<SavedDataContainer>(saveObjects);
+                LastExitTime = DateTime.Now;
             }
-
-            for (int i = 0; i < saveObjectsList.Count; i++)
-            {
-                saveObjectsList[i].Restored = false;
-            }
-
-            Time = time;
-            lastFlushTime = Time;
         }
 
         public void Flush()
         {
-            saveObjects = saveObjectsList.ToArray();
-
-            for (int i = 0; i < saveObjectsList.Count; i++)
-            {
-                var saveObject = saveObjectsList[i];
-
-                saveObject.Flush();
-            }
-
             gameTime += Time - lastFlushTime;
+            PlayerPrefs.SetFloat(KEY_GAME_TIME, gameTime);
 
             lastFlushTime = Time;
 
-            lastExitTime = DateTime.Now;
+            LastExitTime = DateTime.Now;
+            PlayerPrefs.SetString(KEY_LAST_EXIT_TIME, LastExitTime.ToString());
+
+            PlayerPrefs.Save();
         }
 
         public T GetSaveObject<T>(int hash) where T : ISaveObject, new()
         {
-            var container = saveObjectsList.Find((container) => container.Hash == hash);
-
-            if (container == null)
+            string key = $"SAVE_OBJ_{hash}";
+            if (PlayerPrefs.HasKey(key))
             {
-                var saveObject = new T();
-                container = new SavedDataContainer(hash, new T());
-
-                saveObjectsList.Add(container);
-
+                string json = PlayerPrefs.GetString(key);
+                return JsonUtility.FromJson<T>(json);
             }
             else
             {
-                if (!container.Restored) container.Restore<T>();
+                T obj = new T();
+                SaveObject(obj, hash); // сразу сохраняем, если нового создаём
+                return obj;
             }
-            return (T)container.SaveObject;
         }
 
         public T GetSaveObject<T>(string uniqueName) where T : ISaveObject, new()
@@ -87,13 +76,19 @@ namespace Watermelon
             return GetSaveObject<T>(uniqueName.GetHashCode());
         }
 
+        public void SaveObject<T>(T obj, int hash)
+        {
+            string key = $"SAVE_OBJ_{hash}";
+            string json = JsonUtility.ToJson(obj);
+            PlayerPrefs.SetString(key, json);
+            PlayerPrefs.Save();
+        }
+
         public void Info()
         {
-            foreach (var container in saveObjectsList)
-            {
-                Debug.Log("Hash: " + container.Hash);
-                Debug.Log("Save Object: " + container.SaveObject);
-            }
+            Debug.Log($"Level ID: {LevelId}");
+            Debug.Log($"Game Time: {gameTime}");
+            Debug.Log($"Last Exit Time: {LastExitTime}");
         }
     }
 }

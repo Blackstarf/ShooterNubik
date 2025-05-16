@@ -81,14 +81,6 @@ namespace Watermelon
             return instance.database.GetDataForLevel(level).ExperienceRequired;
         }
 
-        private void Update()
-        {
-            if (Input.GetKeyDown(KeyCode.E))
-            {
-                Debug.Log("[Experience controller] Exp Amount: " + ExperiencePoints + "  level: " + CurrentLevel);
-            }
-        }
-
         #region Development
 
         public static void SetLevelDev(int level)

@@ -1,14 +1,12 @@
 using System;
 using System.Collections;
 using UnityEngine;
-using System.Threading;
 
 namespace Watermelon
 {
     public static class SaveController
     {
-        private const Serializer.SerializeType SAVE_SERIALIZE_TYPE = Serializer.SerializeType.Binary;
-        private const string SAVE_FILE_NAME = "save";
+        private const string SAVE_KEY = "SAVE_DATA";
         private const int SAVE_DELAY = 30;
 
         private static GlobalSave globalSave;
@@ -20,11 +18,9 @@ namespace Watermelon
 
         public static int LevelId { get => globalSave.LevelId; set => globalSave.LevelId = value; }
         public static float GameTime => globalSave.GameTime;
-
         public static DateTime LastExitTime => globalSave.LastExitTime;
 
         public static event SimpleCallback OnSaveLoaded;
-        private static string tempSaveFileName;
 
         public static void Initialise(bool useAutoSave, bool clearSave = false, float overrideTime = -1f)
         {
@@ -39,71 +35,49 @@ namespace Watermelon
 
             if (useAutoSave)
             {
-                // Enable auto-save coroutine
                 Tween.InvokeCoroutine(AutoSaveCoroutine());
             }
-        }
-
-        public static void UpdateTime(float time)
-        {
-            globalSave.Time = time;
-        }
-
-        public static T GetSaveObject<T>(int hash) where T : ISaveObject, new()
-        {
-            if (!isSaveLoaded)
-            {
-                Debug.LogError("Save controller has not been initialized");
-                return default;
-            }
-
-            return globalSave.GetSaveObject<T>(hash);
-        }
-
-        public static T GetSaveObject<T>(string uniqueName) where T : ISaveObject, new()
-        {
-            return GetSaveObject<T>(uniqueName.GetHashCode());
         }
 
         private static void InitClear(float time)
         {
             globalSave = new GlobalSave();
             globalSave.Init(time);
-
-            Debug.Log("[Save Controller]: Created clear save!");
-
             isSaveLoaded = true;
+
+            Debug.Log("[SaveController]: Clear save created.");
         }
 
         private static void Load(float time)
         {
-            if (isSaveLoaded)
-                return;
-
-            // Try to read and deserialize file or create new one
-            globalSave = Serializer.DeserializeFromPDP<GlobalSave>(SAVE_FILE_NAME, SAVE_SERIALIZE_TYPE, logIfFileNotExists: false);
+            if (PlayerPrefs.HasKey(SAVE_KEY))
+            {
+                string json = PlayerPrefs.GetString(SAVE_KEY);
+                globalSave = JsonUtility.FromJson<GlobalSave>(json);
+            }
+            else
+            {
+                globalSave = new GlobalSave();
+            }
 
             globalSave.Init(time);
-
-            Debug.Log("[Save Controller]: Save is loaded!");
-
             isSaveLoaded = true;
 
+            Debug.Log("[SaveController]: Save loaded.");
             OnSaveLoaded?.Invoke();
         }
 
         public static void Save()
         {
-            if (!isSaveRequired)
-                return;
+            if (!isSaveRequired) return;
 
             globalSave.Flush();
 
-            var saveThread = new Thread(SaveThreadFunction);
-            saveThread.Start();
+            string json = JsonUtility.ToJson(globalSave);
+            PlayerPrefs.SetString(SAVE_KEY, json);
+            PlayerPrefs.Save();
 
-            Debug.Log("[Save Controller]: Game is saved!");
-
+            Debug.Log("[SaveController]: Game saved.");
             isSaveRequired = false;
         }
 
@@ -111,26 +85,22 @@ namespace Watermelon
         {
             globalSave.Flush();
 
-            var saveThread = new Thread(SaveThreadFunction);
-            saveThread.Start();
+            string json = JsonUtility.ToJson(globalSave);
+            PlayerPrefs.SetString(SAVE_KEY, json);
+            PlayerPrefs.Save();
 
-            Debug.Log("[Save Controller]: Game is saved!");
-
+            Debug.Log("[SaveController]: Game force-saved.");
             isSaveRequired = false;
         }
 
-        private static void SaveThreadFunction()
+        private static IEnumerator AutoSaveCoroutine()
         {
-            Serializer.SerializeToPDP(globalSave, SAVE_FILE_NAME, SAVE_SERIALIZE_TYPE);
-        }
+            WaitForSeconds wait = new WaitForSeconds(SAVE_DELAY);
 
-        public static void SaveCustom(GlobalSave globalSave)
-        {
-            if(globalSave != null)
+            while (true)
             {
-                globalSave.Flush();
-
-                Serializer.SerializeToPDP(globalSave, SAVE_FILE_NAME, SAVE_SERIALIZE_TYPE);
+                yield return wait;
+                Save();
             }
         }
 
@@ -139,50 +109,64 @@ namespace Watermelon
             isSaveRequired = true;
         }
 
-        private static IEnumerator AutoSaveCoroutine()
-        {
-            WaitForSeconds waitForSeconds = new WaitForSeconds(SAVE_DELAY);
-
-            while (true)
-            {
-                yield return waitForSeconds;
-
-                Save();
-            }
-        }
-
-        public static void PresetsSave(string fullFileName)
-        {
-            globalSave.Flush();
-
-            tempSaveFileName = fullFileName;
-
-            var saveThread = new Thread(PresetsSaveThreadFunction);
-            saveThread.Start();
-        }
-
-        private static void PresetsSaveThreadFunction()
-        {
-            Serializer.SerializeToPDP(globalSave, tempSaveFileName, SAVE_SERIALIZE_TYPE);
-        }
-
-        public static void Info()
-        {
-            globalSave.Info();
-        }
-
         public static void DeleteSaveFile()
         {
-            Serializer.DeleteFileAtPDP(SAVE_FILE_NAME);
+            PlayerPrefs.DeleteKey(SAVE_KEY);
         }
 
         public static GlobalSave GetGlobalSave()
         {
-            GlobalSave tempGlobalSave = Serializer.DeserializeFromPDP<GlobalSave>(SAVE_FILE_NAME, SAVE_SERIALIZE_TYPE, logIfFileNotExists: false);
-
-            tempGlobalSave.Init(Time.time);
-
-            return tempGlobalSave;
+            return globalSave;
         }
+        public static T GetSaveObject<T>(int hash) where T : ISaveObject, new()
+        {
+            string key = $"SAVE_OBJ_{hash}";
+
+            if (PlayerPrefs.HasKey(key))
+            {
+                string json = PlayerPrefs.GetString(key);
+                return JsonUtility.FromJson<T>(json);
+            }
+            else
+            {
+                // Если объект не найден — создать новый
+                T saveObject = new T();
+                string json = JsonUtility.ToJson(saveObject);
+                PlayerPrefs.SetString(key, json);
+                PlayerPrefs.Save();
+                return saveObject;
+            }
+        }
+
+        public static T GetSaveObject<T>(string uniqueName) where T : ISaveObject, new()
+        {
+            return GetSaveObject<T>(uniqueName.GetHashCode());
+        }
+        public static void SaveCustom(GlobalSave customGlobalSave)
+        {
+            if (customGlobalSave != null)
+            {
+                customGlobalSave.Flush();
+                Debug.Log("[Save Controller]: Custom game save flushed to PlayerPrefs!");
+            }
+        }
+        public static void PresetsSave(string presetKey)
+        {
+            if (globalSave == null)
+            {
+                Debug.LogWarning("[Save Controller]: Can't save preset, globalSave is null!");
+                return;
+            }
+
+            globalSave.Flush(); // Обновляем PlayerPrefs по текущему глобальному состоянию
+
+            // Сохраняем как JSON в отдельный ключ (например, "preset_save_profile1")
+            string json = JsonUtility.ToJson(globalSave);
+            PlayerPrefs.SetString(presetKey, json);
+            PlayerPrefs.Save();
+
+            Debug.Log($"[Save Controller]: Preset saved under key '{presetKey}'");
+        }
+
     }
 }

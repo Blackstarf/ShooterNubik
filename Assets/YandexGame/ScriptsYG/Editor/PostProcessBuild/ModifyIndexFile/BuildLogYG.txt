@@ -1,2 +1,2 @@
-Build path: C:/Users/B-ZONE/OneDrive/Рабочий стол/BuildShooter/Builds
-Build number: 32
+Build path: C:/Users/B-ZONE/OneDrive/Рабочий стол/AllBulds/BuildShooter/Builds
+Build number: 33
